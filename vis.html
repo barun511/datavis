@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="custom.css">
+    <script src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+</head>
+<body>
+    <div class="container content">
+        <div class="explanation">
+           <h3> Data Visualization Project </h3>
+           <h6> Barun Parruck </h6>
+           <p>
+              Lately in America, gun violence has reemerged as a problem that plagues both political dialogue and news headlines everywhere. One prominent argument <i>for</i> the continued legal possession of guns is that guns don't cause gun violence, people do. Vox then came out with a series of <a href="https://www.vox.com/policy-and-politics/2017/10/2/16399418/us-gun-violence-statistics-maps-charts">data visualizations</a> that answered this question (and many more). 
+          </p>
+          <p>
+            Inspired in general towards visualizations about crime, I decided to start by looking at the data given to me (I had to clean it first, and that took a while). To warm up (and to get a feel for the data), I looked at the number of crimes reported, as well as the number of people in prison, across the years. 
+        </p>
+        <h3> Prison Population Graph </h3>
+        <div class="chart" id="prisonchart"></div>
+        <p>
+            Despite some variation, in general, the prison population of India has increased over the years - not a surprising result, since the population of India has also increased. There seemed to be some reduction in the year 2010, however - and a sudden increase in the year 2005. It may be of interest to note that the Indian general elections happened in the years 2004 and 2009. 
+        </p>
+        <h3> Crimes Reported Graph </h3>
+        <div class="chart" id="crimechart"></div>
+        </div>
+        <p>
+            Like the previous graph, the crimes reported has also grown steadily over the years - though there appears to be no clear relation to the election years as in the previous example. The increase is also more marked - the years from 2001 to 2006 showed little change (only about a hundred thousand crimes more were reported, about a 5% increase). Between 2006 to 2012, the number of crimes reported rose from 1.8 million to 2.3 million, a 27% increase. 
+        </p>
+        <h3> Crimes Reported plotted with Prison Population </h3>
+        <div class="chart" id="finalchart"></div>
+        <p>
+            This graph is more interesting - I expected to see a rather steady relation between the number of people in prison and the number of crimes reported. It appears to be almost the other way around - from 2001 to 2003, the number of crimes reported decreased, but the number of people in prison increased - in fact, the inverse relationship persists through most years, though it's more clearly marked in the 2008-10 period. This was quite surprising - if we are being conservative we would state that there appears to be no clear decision. We can, however, try and be more ambitious and state that either there is an inverse relationship between these two factors, or that the prison population seems to <i>lag</i> behind the crimes reported by a few years. The results are intriguing no matter what - and I would ideally like data for about 30 years to be able to make a clearer statement - but we can atleast categorically state that there is no clear linear relationship between the number of people sent to prison, and the number of crimes committed. 
+        </p>
+        <h3> Bonus Chart : Prison Population by State </h3>
+        <div class="chart" id="statecrimechart"></div>
+        <p>
+            As a bonus, we've plotted the prison population over the years by state - both to experiment with new and unique ways to represent data over multiple axes. The clear outlier is Uttar Pradesh, of course, but notice the sudden spike in Bihar in 2005 (during President's rule). With the election of Nitish Kumar at the end of the year, the crime rate in Bihar gradually started dropping, until 2010, when they dropped below Madhya Pradesh. 
+        </p>
+    </div>
+    <script type="text/javascript">
+        var svg = dimple.newSvg("#finalchart",800,600);
+        d3.csv("total_cleaned_data.csv", function(data)
+        {
+            var chart = new dimple.chart(svg, data);
+            var year_axis = chart.addCategoryAxis("x","year");
+            var crime_axis = chart.addMeasureAxis("y","crimes_reported");
+            var prison_axis = chart.addMeasureAxis("y", "people_in_prison");
+            year_axis.title = "Year";
+            prison_axis.title = "Prison Population";
+            crime_axis.title = "Crimes Reported";
+            crime_axis.overrideMin = 0;
+            crime_axis.overrideMax = 2400000;
+            prison_axis.overrideMin=0;
+            prison_axis.overrideMax = 530000;
+            var crime_series = chart.addSeries("year",dimple.plot.line, [year_axis, crime_axis]);
+            chart.addSeries("year", dimple.plot.bubble, [year_axis, prison_axis]);
+            chart.draw();
+        });
+        var svg2 = dimple.newSvg("#prisonchart", 800, 600);
+        //prison chart
+        d3.csv("clean_prison_data.csv", function(data)
+        {
+            var chart = new dimple.chart(svg2, data);
+            var year_axis = chart.addCategoryAxis("x","year");
+            year_axis.title = "Year";
+            var prison_axis = chart.addMeasureAxis("y","people");
+            prison_axis.title = "Prison Population";
+            chart.addSeries("year",dimple.plot.bar, [year_axis, prison_axis]);
+            chart.draw();
+        });
+        var svg3 = dimple.newSvg("#crimechart", 800, 600);
+        d3.csv("clean_crime_data.csv", function(data)
+        {
+            var chart = new dimple.chart(svg3, data);
+            var year_axis = chart.addCategoryAxis("x","year");
+            year_axis.title = "Year";
+            var crime_axis = chart.addMeasureAxis("y","people");
+            crime_axis.title = "Crimes Reported";
+            chart.addSeries("year",dimple.plot.bar, [year_axis, crime_axis]);
+            chart.draw();
+        });
+        var svg4 =dimple.newSvg("#statecrimechart", 800, 600);
+        d3.csv("clean_prison_data.csv", function(data)
+        {
+            var chart = new dimple.chart(svg4,data);
+            var year_axis = chart.addCategoryAxis("x","year");
+            year_axis.title = "Year";
+            var prison_axis = chart.addMeasureAxis("y","people");
+            prison_axis.title = "Crimes Reported";
+            chart.addSeries("state",dimple.plot.line, [year_axis, prison_axis]);
+            chart.draw();
+        });
+    </script>
+</div>
+</body>
+</html>

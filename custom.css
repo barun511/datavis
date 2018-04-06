@@ -1,0 +1,21 @@
+.content
+{
+	background-color: white;
+	margin-right: auto;
+	margin-left: auto;
+	width:80%;
+	
+}
+body
+{
+	background-color: #FAEBD7;
+}
+.explanation h3,h6
+{
+	text-align:center;
+}
+.chart
+{
+	width:80%;
+	margin-left:auto;
+}
