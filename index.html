@@ -60,8 +60,8 @@
             crime_axis.title = "Crimes Reported";
             crime_axis.overrideMin = 0;
             crime_axis.overrideMax = 2400000;
-            prison_axis.overrideMin=0;
-            prison_axis.overrideMax = 530000;
+            prison_axis.overrideMin = 250000;
+            prison_axis.overrideMax = 450000;
             var crime_series = chart.addSeries("year",dimple.plot.line, [year_axis, crime_axis]);
             chart.addSeries("year", dimple.plot.bubble, [year_axis, prison_axis]);
             chart.draw();
@@ -75,6 +75,8 @@
             year_axis.title = "Year";
             var prison_axis = chart.addMeasureAxis("y","people");
             prison_axis.title = "Prison Population";
+            prison_axis.overrideMin=250000;
+            prison_axis.overrideMax = 450000;
             chart.addSeries("year",dimple.plot.bar, [year_axis, prison_axis]);
             chart.draw();
         });
@@ -86,6 +88,8 @@
             year_axis.title = "Year";
             var crime_axis = chart.addMeasureAxis("y","people");
             crime_axis.title = "Crimes Reported";
+            crime_axis.overrideMin = 1400000;
+            crime_axis.overrideMax = 2400000;
             chart.addSeries("year",dimple.plot.bar, [year_axis, crime_axis]);
             chart.draw();
         });
